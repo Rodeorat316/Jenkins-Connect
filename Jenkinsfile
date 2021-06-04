@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Initialization') {
             steps {
-                echo 'Starting the Script right noww!'
+                echo 'Starting the Script right now!'
             }
         }
       
