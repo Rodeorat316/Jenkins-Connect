@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+    
+        stages {
+            stage('Job Initialization') {
+                steps {
+                    echo 'Starting the Script meow'
+                    echo "Current workspace is ${env.WORKSPACE}"
+                }
+            }
+            stage('Creating an Amazon Connect Instance'){
+                steps {
+                    echo 'Creating the Amazon Connect Instance'
+                    
+                    withAWS(credentials: '{YOUR JENKINS API CREDENTIALS}', region: 'us-east-1') {
+                        // List all the Buckets
+                       script {
+                            //sh(script: "aws --version", returnStatus: true)
+                            sh(script: "aws connect create-instance --identity-management-type CONNECT_MANAGED --instance-alias ${params.Instance_Alias} --inbound-calls-enabled --outbound-calls-enabled", returnStatus: true)
+                       }
+                    }
+                }
+                
+                post {
+                  aborted {
+                    // Current job was aborted, sending out an aborted email notification
+                    emailext attachLog: true, 
+                        body: '''Hello, Your recent Jenkins job ${BUILD_ID} was aborted.  Details of this job can be found at ${BUILD_URL}. Attached to this email is the Jenkins build log for this job, please investigate!''', 
+                        mimeType: 'text/html', 
+                        replyTo: '{REPLY EMAIL ADDRESS}', 
+                        subject: 'Jenkins Job - \'${JOB_NAME}\' - Status - ABORTED', 
+                        to: '{TO EMAIL ADDRESS}' 
+                  }
+                  success {
+                    // Current job was successful, sending out a success email notification
+                    emailext attachLog: true,
+                        compressLog: true,
+                        body: '''Hello, Your recent Jenkins job: ${JOB_NAME} - ${BUILD_ID} was: successful.<br>Details of this job can be found at ${BUILD_URL}.<br>Attached to this email is the Jenkins build log for this job.<br>Enjoy!''', 
+                        mimeType: 'text/html', 
+                        replyTo: '{REPLY EMAIL ADDRESS}', 
+                        subject: 'Jenkins Job - ${JOB_NAME} - Build ${BUILD_NUMBER} - Status - SUCCESS',
+                        to: '{TO EMAIL ADDRESS}'
+                  }
+                  failure {
+                    // Current job has failed, sending out a failure email notification
+                    emailext attachLog: true, 
+                        body: '''Hello, Your recent Jenkins job ${BUILD_ID} has failed.  Details of this job can be found at ${BUILD_URL}. Attached to this email is the Jenkins build log for this job, please investigate!''', 
+                        mimeType: 'text/html', 
+                        replyTo: '{REPLY EMAIL ADDRESS}', 
+                        subject: 'Jenkins Job - \'${JOB_NAME}\' - Status - FAILED', 
+                        to: '{TO EMAIL ADDRESS}' 
+                  }
+                  unsuccessful {
+                    // Current job was unsuccessful, sending out an unsuccessful email notification
+                    emailext attachLog: true, 
+                        body: '''Hello, Your recent Jenkins job ${BUILD_ID} was unsuccessful.  Details of this job can be found at ${BUILD_URL}. Attached to this email is the Jenkins build log for this job, please investigate!''', 
+                        mimeType: 'text/html', 
+                        replyTo: '{REPLY EMAIL ADDRESS}', 
+                        subject: 'Jenkins Job - \'${JOB_NAME}\' - Status - UNSUCCESSFUL', 
+                        to: '{TO EMAIL ADDRESS}' 
+                  }
+                }
+            }
+        }
+}
