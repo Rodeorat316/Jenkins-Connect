@@ -1,0 +1,39 @@
+pipeline {
+	
+	agent any
+
+	environment {
+
+		//Contains Global variables and definitions
+
+	}
+
+	stages {
+
+		stage('Step 1 in the Job'){
+
+			//Perhaps pull down Github repo
+		
+		}
+
+		stage('Step 2 in the Job'){
+
+			//Perhaps create a Connect Instance
+
+		}
+
+		stage('Step 3 in the Job'){
+
+			//Update Connect Instance settings
+
+		}
+
+	}
+
+	post {
+
+		//What to do after the job completes
+		//Example: Email or Slack notification
+
+	}
+}
