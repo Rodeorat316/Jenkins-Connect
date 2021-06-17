@@ -1,0 +1,44 @@
+All Linux Commands presented in the presentation are below:
+
+ssh -i {PEM file} ec2-user@public ip
+
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo
+
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
+sudo yum upgrade
+
+sudo yum install jenkins java-1.8.0-openjdk-devel -y
+
+sudo systemctl daemon-reload
+
+sudo systemctl start jenkins
+
+sudo systemctl status Jenkins
+
+aws --version
+
+sudo rm -rf /bin/aws
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+
+ls -l
+
+unzip awscliv2.zip
+
+sudo ./aws/install -i /usr/local/aws -b /bin
+
+aws –-version
+
+sudo cat {path to the Jenkins initial pwd file}
+
+Jenkins.instance.pluginManager.plugins.each{
+  plugin -> 
+    println ("${plugin.getDisplayName()} (${plugin.getShortName()}): ${plugin.getVersion()}")
+}
+
+
+wget http://localhost:8080/jnlpJars/jenkins-cli.jar
+
+java -jar jenkins-cli.jar -auth {usernanme}:{password} -s http://localhost:8080/ -webSocket install-plugin aws-java-sdk dark-theme authentication-tokens blueocean blueocean-core-js blueocean-pipeline-editor blueocean-bitbucket-pipeline blueocean-autofavorite blueocean-dashboard blueocean-commons blueocean-config blueocean-display-url blueocean-events blueocean-git-pipeline blueocean-github-pipeline cloudbees-bitbucket-branch-source aws-credentials convert-to-pipeline jenkins-design-language docker-commons docker-workflow favorite groovy http_request blueocean-jira jira mercurial pipeline-aws slack email-ext -deploy -restart
